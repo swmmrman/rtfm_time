@@ -1,16 +1,10 @@
-# Pico 2 Template
+This project is just me reading through manuals and playing with stuff.  Feel free to use anything here, learn, or laugh if you want.
+None of this code has any intended purpose other then learning. 
 
-A Rust project template for Raspberry Pi Pico 2 (RP2350) development.
+The template is provided by ImplFerris. 
 
-## Usage
+https://github.com/ImplFerris/pico2-template.git 
 
-Generate a new project:
+The documentation I am reading is here. 
 
-```sh
-cargo generate --git https://github.com/ImplFerris/pico2-template.git
-```
-
-## Options
-
-- HAL: Choose between Embassy (async) or rp-hal
-- defmt logging: Optional debugging support
+https://pico.implrust.com/index.html
