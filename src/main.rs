@@ -24,7 +24,7 @@ async fn main(_spawner: Spawner) {
     let mut led = Output::new(p.PIN_7, Level::Low);
     // led.set_high();
     loop {
-        Timer::after_millis(100).await;
+        Timer::after_millis(1000).await;
         led.toggle();
     }
 }
