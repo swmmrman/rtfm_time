@@ -1,13 +1,16 @@
 #![no_std]
 #![no_main]
 
-use embassy_rp as hal;
 use embassy_executor::Spawner;
+use embassy_rp as hal;
 use embassy_rp::block::ImageDef;
-use embassy_time::Timer;
+use embassy_rp::i2c::Config as I2cConfig;
+use embassy_rp::i2c::{self};
+use embassy_time::Delay;
+use hd44780_driver;
 
 //Panic Handler
-use {panic_probe as _};
+use panic_probe as _;
 // Defmt Logging
 use defmt_rtt as _;
 
@@ -20,9 +23,9 @@ pub static IMAGE_DEF: ImageDef = hal::block::ImageDef::secure_exe();
 async fn main(_spawner: Spawner) {
     let p = embassy_rp::init(Default::default());
 
-    loop{
+    loop {
         Timer::after_millis(100).await;
-    }   
+    }
 }
 
 // Program metadata for `picotool info`.
@@ -31,9 +34,7 @@ async fn main(_spawner: Spawner) {
 #[used]
 pub static PICOTOOL_ENTRIES: [embassy_rp::binary_info::EntryAddr; 4] = [
     embassy_rp::binary_info::rp_program_name!(c"lcd"),
-    embassy_rp::binary_info::rp_program_description!(
-        c"your program description"
-    ),
+    embassy_rp::binary_info::rp_program_description!(c"your program description"),
     embassy_rp::binary_info::rp_cargo_version!(),
     embassy_rp::binary_info::rp_program_build_attribute!(),
 ];
