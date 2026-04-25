@@ -2,6 +2,9 @@
 #![no_main]
 
 use embassy_executor::Spawner;
+use embassy_rp::gpio::{Level, Output};
+use embassy_time::Timer;
+
 
 #[panic_handler]
 fn panic(_: &core::panic::PanicInfo) -> ! {
@@ -9,4 +12,11 @@ fn panic(_: &core::panic::PanicInfo) -> ! {
 }
 
 #[embassy_executor::main]
-async fn main(_spawner: Spawner) {}
+async fn main(_spawner: Spawner) {
+    let p = embassy_rp::init(Default::default());
+    let mut led = Output::new(p.PIN_5, Level::Low);
+    loop {
+        led.toggle();
+        Timer::after_millis(100).await;
+    }
+}
