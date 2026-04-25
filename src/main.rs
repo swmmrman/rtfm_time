@@ -16,20 +16,37 @@ use defmt_rtt as _;
 /// Tell the Boot ROM about our application
 #[unsafe(link_section = ".start_block")]
 #[used]
+
 pub static IMAGE_DEF: ImageDef = hal::block::ImageDef::secure_exe();
+
+pub struct Counter {
+    count: i64,
+}
+
+impl Counter {
+    fn inc(&mut self) {
+        self.count += 1
+    }
+    pub fn get(&mut self) -> i64 {
+        self.inc();
+        self.count
+    }
+    pub fn new() -> Counter {
+        Counter { count: 0 }
+    }
+}
 
 #[embassy_executor::main]
 async fn main(_spawner: Spawner) {
     let p = embassy_rp::init(Default::default());
     println!("Hello");
     let mut led = Output::new(p.PIN_7, Level::Low);
-    let mut counter = 0;
+    let mut count = Counter::new();
     // led.set_high();
     loop {
         Timer::after_millis(100).await;
         led.toggle();
-        counter += 1;
-        if counter > 500 {
+        if count.get() > 500 {
             panic!("To much blinking!")
         }
     }
