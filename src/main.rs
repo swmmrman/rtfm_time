@@ -1,6 +1,7 @@
 #![no_std]
 #![no_main]
 
+use defmt::println;
 use embassy_executor::Spawner;
 use embassy_rp::block::ImageDef;
 use embassy_rp::{self as hal, gpio};
@@ -20,7 +21,7 @@ pub static IMAGE_DEF: ImageDef = hal::block::ImageDef::secure_exe();
 #[embassy_executor::main]
 async fn main(_spawner: Spawner) {
     let p = embassy_rp::init(Default::default());
-
+    println!("Hello");
     let mut led = Output::new(p.PIN_7, Level::Low);
     // led.set_high();
     loop {
