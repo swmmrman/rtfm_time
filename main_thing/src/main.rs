@@ -35,6 +35,9 @@ impl Counter {
     pub fn new() -> Counter {
         Counter { count: 0 }
     }
+    pub fn get_cur(&mut self) -> i64 {
+        self.count
+    }
 }
 
 #[embassy_executor::main]
