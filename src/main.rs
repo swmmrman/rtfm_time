@@ -23,10 +23,15 @@ async fn main(_spawner: Spawner) {
     let p = embassy_rp::init(Default::default());
     println!("Hello");
     let mut led = Output::new(p.PIN_7, Level::Low);
+    let mut counter = 0;
     // led.set_high();
     loop {
-        Timer::after_millis(1000).await;
+        Timer::after_millis(100).await;
         led.toggle();
+        counter += 1;
+        if counter > 500 {
+            panic!("To much blinking!")
+        }
     }
 }
 
