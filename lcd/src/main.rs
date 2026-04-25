@@ -5,9 +5,8 @@ use embassy_executor::Spawner;
 use embassy_rp as hal;
 use embassy_rp::block::ImageDef;
 use embassy_rp::i2c::{self};
-use embassy_rp::interrupt::Interrupt::I2C0_IRQ;
 use embassy_time::Delay;
-use hd44780_driver;
+use hd44780_driver::{self, HD44780};
 
 //Panic Handler
 use panic_probe as _;
@@ -26,10 +25,19 @@ async fn main(_spawner: Spawner) {
     let sda = p.PIN_16;
     let scl = p.PIN_17;
 
+    //I2C bus
     let mut i2c_config = i2c::Config::default();
     i2c_config.frequency = 100000;
     let i2c = i2c::I2c::new_blocking(p.I2C0, scl, sda, i2c_config);
 
+    //lcd
+    let mut lcd = HD44780::new_i2c(i2c, LCD_I2C_ADDRESS, &mut Delay).expect("Crash!");
+
+    lcd.reset(&mut Delay).expect("Failed to reset");
+    lcd.clear(&mut Delay).expect("Faile to clear");
+
+    lcd.write_str("Hello World", &mut Delay)
+        .expect("Replace LCD,  cannot write");
     loop {
         //Timer::after_millis(100).await;
     }
