@@ -4,6 +4,7 @@
 use defmt::println;
 use embassy_executor::Spawner;
 use embassy_rp::block::ImageDef;
+use embassy_rp::usb::Out;
 use embassy_rp::{self as hal, gpio};
 use embassy_time::Timer;
 use gpio::{Level, Output};
@@ -40,12 +41,23 @@ impl Counter {
 async fn main(_spawner: Spawner) {
     let p = embassy_rp::init(Default::default());
     println!("Hello");
-    let mut led = Output::new(p.PIN_7, Level::Low);
+    let mut leds: [Output; 8] = [
+        Output::new(p.PIN_5, Level::Low),
+        Output::new(p.PIN_6, Level::Low),
+        Output::new(p.PIN_7, Level::Low),
+        Output::new(p.PIN_8, Level::Low),
+        Output::new(p.PIN_9, Level::Low),
+        Output::new(p.PIN_10, Level::Low),
+        Output::new(p.PIN_11, Level::Low),
+        Output::new(p.PIN_12, Level::Low),
+    ];
     let mut count = Counter::new();
     // led.set_high();
     loop {
         Timer::after_millis(500).await;
-        led.toggle();
+        for led in &mut leds {
+            led.toggle()
+        }
         if count.get() > 5000 {
             panic!("To much blinking!")
         }
