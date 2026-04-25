@@ -20,5 +20,8 @@ async fn main(_spawner: Spawner) {
     let mut led = Pwm::new_output_a(p.PWM_SLICE3, p.PIN_6, pwm_config);
     loop {
         let _ = led.set_duty_cycle_percent(1);
+        Timer::after_millis(500).await;
+        let _ = led.set_duty_cycle_percent(0);
+        Timer::after_millis(500).await;
     }
 }
