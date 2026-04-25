@@ -44,7 +44,7 @@ async fn main(_spawner: Spawner) {
     let mut count = Counter::new();
     // led.set_high();
     loop {
-        Timer::after_millis(100).await;
+        Timer::after_millis(500).await;
         led.toggle();
         if count.get() > 500 {
             panic!("To much blinking!")
