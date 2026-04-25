@@ -18,10 +18,10 @@ async fn main(_spawner: Spawner) {
     let mut pwm_config: Config = Default::default();
     pwm_config.phase_correct = true;
     let mut led = Pwm::new_output_a(p.PWM_SLICE3, p.PIN_6, pwm_config);
+    let mut status = 1;
     loop {
-        let _ = led.set_duty_cycle_percent(1);
-        Timer::after_millis(500).await;
-        let _ = led.set_duty_cycle_percent(0);
+        let _ = led.set_duty_cycle_percent(status);
+        status ^= 1;
         Timer::after_millis(500).await;
     }
 }
