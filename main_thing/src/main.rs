@@ -44,7 +44,8 @@ impl Counter {
 #[embassy_executor::main]
 async fn main(_spawner: Spawner) {
     let p = embassy_rp::init(Default::default());
-    let pwm_config: Config = Default::default();
+    let mut pwm_config: Config = Default::default();
+    pwm_config.divider = 16.try_into().unwrap();
     println!("Hello");
     let mut leds: [Pwm; 4] = [
         Pwm::new_output_ab(p.PWM_SLICE3, p.PIN_6, p.PIN_7, pwm_config.clone()),
