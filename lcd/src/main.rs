@@ -4,8 +4,8 @@
 use embassy_executor::Spawner;
 use embassy_rp as hal;
 use embassy_rp::block::ImageDef;
-use embassy_rp::i2c::Config as I2cConfig;
 use embassy_rp::i2c::{self};
+use embassy_rp::interrupt::Interrupt::I2C0_IRQ;
 use embassy_time::Delay;
 use hd44780_driver;
 
@@ -22,6 +22,13 @@ pub static IMAGE_DEF: ImageDef = hal::block::ImageDef::secure_exe();
 #[embassy_executor::main]
 async fn main(_spawner: Spawner) {
     let p = embassy_rp::init(Default::default());
+    const LCD_I2C_ADDRESS: u8 = 0x27;
+    let sda = p.PIN_16;
+    let scl = p.PIN_17;
+
+    let mut i2c_config = i2c::Config::default();
+    i2c_config.frequency = 100000;
+    let i2c = i2c::I2c::new_blocking(p.I2C0, scl, sda, i2c_config);
 
     loop {
         Timer::after_millis(100).await;
