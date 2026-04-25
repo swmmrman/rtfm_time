@@ -46,7 +46,7 @@ async fn main(_spawner: Spawner) {
     loop {
         Timer::after_millis(500).await;
         led.toggle();
-        if count.get() > 500 {
+        if count.get() > 5000 {
             panic!("To much blinking!")
         }
     }
