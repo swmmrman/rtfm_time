@@ -36,8 +36,8 @@ impl Counter {
     pub fn new() -> Counter {
         Counter { count: 0 }
     }
-    pub fn get_cur(&mut self) -> i64 {
-        self.count
+    pub fn get_cur_u16(&mut self) -> u16 {
+        (self.count % 65535).try_into().unwrap()
     }
 }
 
@@ -57,7 +57,7 @@ async fn main(_spawner: Spawner) {
     loop {
         Timer::after_millis(500).await;
         for led in &mut leds {
-            let _ = led.set_duty_cycle_fraction(&count.get() % 2, 1000);
+            let _ = led.set_duty_cycle_fraction(&count.get_cur_u16() % 2, 1000);
         }
         if count.get() > 5000 {
             panic!("To much blinking!")
