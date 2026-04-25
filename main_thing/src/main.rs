@@ -44,23 +44,20 @@ impl Counter {
 #[embassy_executor::main]
 async fn main(_spawner: Spawner) {
     let p = embassy_rp::init(Default::default());
+    let pwm_config: Config = Default::default();
     println!("Hello");
-    let mut leds: [Output; 8] = [
-        Output::new(p.PIN_5, Level::Low),
-        Output::new(p.PIN_6, Level::Low),
-        Output::new(p.PIN_7, Level::Low),
-        Output::new(p.PIN_8, Level::Low),
-        Output::new(p.PIN_9, Level::Low),
-        Output::new(p.PIN_10, Level::Low),
-        Output::new(p.PIN_11, Level::Low),
-        Output::new(p.PIN_12, Level::Low),
+    let mut leds: [Pwm; 4] = [
+        Pwm::new_output_ab(p.PWM_SLICE3, p.PIN_6, p.PIN_7, pwm_config.clone()),
+        Pwm::new_output_ab(p.PWM_SLICE4, p.PIN_8, p.PIN_9, pwm_config.clone()),
+        Pwm::new_output_ab(p.PWM_SLICE5, p.PIN_10, p.PIN_11, pwm_config.clone()),
+        Pwm::new_output_ab(p.PWM_SLICE6, p.PIN_12, p.PIN_13, pwm_config.clone()),
     ];
     let mut count = Counter::new();
     // led.set_high();
     loop {
         Timer::after_millis(500).await;
         for led in &mut leds {
-            led.toggle()
+            let _ = led.set_duty_cycle_fraction(&count.get() % 2, 1000);
         }
         if count.get() > 5000 {
             panic!("To much blinking!")
