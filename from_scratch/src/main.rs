@@ -3,8 +3,8 @@
 
 use embassy_executor::Spawner;
 // use embassy_rp::gpio::{Level, Output};
+use embassy_rp::pwm::{Pwm, Config, SetDutyCycle};
 use embassy_time::Timer;
-use embassy_rp::pwm::{Pwm,Config,SetDutyCycle};
 
 
 #[panic_handler]
