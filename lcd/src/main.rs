@@ -31,7 +31,7 @@ async fn main(_spawner: Spawner) {
     let i2c = i2c::I2c::new_blocking(p.I2C0, scl, sda, i2c_config);
 
     loop {
-        Timer::after_millis(100).await;
+        //Timer::after_millis(100).await;
     }
 }
 
