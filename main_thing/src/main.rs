@@ -4,7 +4,8 @@
 use defmt::println;
 use embassy_executor::Spawner;
 use embassy_rp::block::ImageDef;
-use embassy_rp::usb::Out;
+use embassy_rp::pwm::{Config, Pwm, SetDutyCycle};
+// use embassy_rp::usb::Out;
 use embassy_rp::{self as hal, gpio};
 use embassy_time::Timer;
 use gpio::{Level, Output};
