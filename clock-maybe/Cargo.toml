@@ -6,6 +6,9 @@ edition = "2024"
 [dependencies]
 cortex-m = "0.7.7"
 cortex-m-rt = "0.7.5"
-embassy-executor = { version = "0.10.0", features = ["platform-cortex-m", "executor-thread"] }
-embassy-rp = { version = "0.10.0", features = ["critical-section-impl", "rp235xa", "time-driver"] }
+defmt = "1.0.1"
+defmt-rtt = "1.1.0"
+embassy-executor = { version = "0.10.0", features = ["platform-cortex-m", "executor-thread", "defmt"] }
+embassy-rp = { version = "0.10.0", features = ["critical-section-impl", "defmt", "rp235xa", "time-driver"] }
 lcd = "0.4.1"
+panic-probe = { version = "1.0.0", features = ["print-defmt"] }
