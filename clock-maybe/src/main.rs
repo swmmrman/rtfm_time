@@ -1,10 +1,13 @@
 #![no_std]
 #![no_main]
 
-use cortex_m::asm::delay;
 use embassy_executor::Spawner;
 use embassy_rp as hal;
 use embassy_rp::i2c;
+use embassy_rp::{
+    aon_timer::{AonTimer, Config, DateTime, DayOfWeek},
+    bind_interrupts,
+};
 use embassy_time::{Delay, Timer};
 
 use hd44780_driver::{self, HD44780};
@@ -17,7 +20,23 @@ use defmt_rtt as _;
 
 #[embassy_executor::main]
 async fn main(_spawner: Spawner) {
+    bind_interrupts!(struct Irqs{
+        POWMAN_IRQ_TIMER => embassy_rp::aon_timer::InterruptHandler;
+    });
     let p = embassy_rp::init(Default::default());
+    let mut timer = AonTimer::new(p.POWMAN, Irqs, Config::default());
+    let start_time = DateTime {
+        year: 2026,
+        month: 4,
+        day: 27,
+        day_of_week: DayOfWeek::Monday,
+        hour: 16,
+        minute: 55,
+        second: 0,
+    };
+    timer.set_datetime(start_time).unwrap();
+    timer.start();
+
     const LCD_I2C_ADDRESS: u8 = 0x27;
     let sda = p.PIN_16;
     let scl = p.PIN_17;
@@ -30,7 +49,9 @@ async fn main(_spawner: Spawner) {
     //lcd
     let mut lcd = HD44780::new_i2c(i2c, LCD_I2C_ADDRESS, &mut Delay).expect("Crash!");
 
-    let mut buffer = itoa::Buffer::new();
+    let mut buffer_h = itoa::Buffer::new();
+    let mut buffer_m = itoa::Buffer::new();
+    let mut buffer_s = itoa::Buffer::new();
 
     lcd.reset(&mut Delay).expect("Failed to reset");
     lcd.clear(&mut Delay).expect("Faile to clear");
@@ -39,14 +60,20 @@ async fn main(_spawner: Spawner) {
     lcd.set_cursor_blink(hd44780_driver::CursorBlink::Off, &mut Delay)
         .expect("Can this really error?");
 
-    let mut count: u32 = 0;
+    // let mut count: u32 = 0;
     loop {
-        let count_as_str = buffer.format(count);
-        lcd.write_str(&count_as_str, &mut Delay)
-            .expect("Cannot write str");
+        let cur_time = timer.now_as_datetime().unwrap();
+        let h = buffer_h.format(cur_time.hour);
+        let m = buffer_m.format(cur_time.minute);
+        let s = buffer_s.format(cur_time.second);
+        lcd.write_str(&h, &mut Delay).expect("Cannot write str");
+        lcd.write_str(":", &mut Delay).expect("Cannot write str");
+        lcd.write_str(&m, &mut Delay).expect("Cannot write str");
+        lcd.write_str(":", &mut Delay).expect("Cannot write str");
+        lcd.write_str(&s, &mut Delay).expect("Cannot write str");
         lcd.set_cursor_pos(0, &mut Delay)
             .expect("Probably a failed LCD.");
-        count += 1;
+        // count += 1;
         Timer::after_secs(1).await;
     }
 }
