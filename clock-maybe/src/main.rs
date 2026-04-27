@@ -30,8 +30,8 @@ async fn main(_spawner: Spawner) {
         month: 4,
         day: 27,
         day_of_week: DayOfWeek::Monday,
-        hour: 16,
-        minute: 55,
+        hour: 15,
+        minute: 33,
         second: 0,
     };
     timer.set_datetime(start_time).unwrap();
@@ -66,10 +66,19 @@ async fn main(_spawner: Spawner) {
         let h = buffer_h.format(cur_time.hour);
         let m = buffer_m.format(cur_time.minute);
         let s = buffer_s.format(cur_time.second);
+        if cur_time.hour < 10 {
+            lcd.write_str("0", &mut Delay).expect("");
+        }
         lcd.write_str(&h, &mut Delay).expect("Cannot write str");
         lcd.write_str(":", &mut Delay).expect("Cannot write str");
+        if cur_time.minute < 10 {
+            lcd.write_str("0", &mut Delay).expect("");
+        }
         lcd.write_str(&m, &mut Delay).expect("Cannot write str");
         lcd.write_str(":", &mut Delay).expect("Cannot write str");
+        if cur_time.second < 10 {
+            lcd.write_str("0", &mut Delay).expect("");
+        }
         lcd.write_str(&s, &mut Delay).expect("Cannot write str");
         lcd.set_cursor_pos(0, &mut Delay)
             .expect("Probably a failed LCD.");
