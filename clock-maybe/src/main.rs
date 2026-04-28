@@ -39,6 +39,24 @@ fn dow(day: &DayOfWeek) -> &'static str {
     }
 }
 
+fn mas(month: u8) -> &'static str {
+    match month {
+        1 => "Jan",
+        2 => "Feb",
+        3 => "Mar",
+        4 => "Apr",
+        5 => "May",
+        6 => "Jun",
+        7 => "Jul",
+        8 => "Aug",
+        9 => "Sep",
+        10 => "Oct",
+        11 => "Nov",
+        12 => "Dec",
+        _ => "WTF",
+    }
+}
+
 #[embassy_executor::main]
 async fn main(_spawner: Spawner) {
     bind_interrupts!(struct Irqs{
