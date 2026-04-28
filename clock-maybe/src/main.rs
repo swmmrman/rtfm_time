@@ -19,10 +19,14 @@ use panic_probe as _;
 // Defmt Logging
 use defmt_rtt as _;
 
-const L1_START: u8 = 0;
-const L2_START: u8 = 40;
-const L3_START: u8 = 20;
-const L4_START: u8 = 84;
+#[used]
+static L1_START: u8 = 0;
+#[used]
+static L2_START: u8 = 40;
+#[used]
+static L3_START: u8 = 20;
+#[used]
+static L4_START: u8 = 84;
 
 fn dow(day: &DayOfWeek) -> &'static str {
     match day {
