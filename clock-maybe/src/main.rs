@@ -1,6 +1,7 @@
 #![no_std]
 #![no_main]
 
+use defmt::Format;
 use embassy_executor::Spawner;
 use embassy_rp as hal;
 use embassy_rp::i2c;
@@ -18,6 +19,23 @@ use panic_probe as _;
 // Defmt Logging
 use defmt_rtt as _;
 
+const L1_START: u8 = 0;
+const L2_START: u8 = 40;
+const L3_START: u8 = 20;
+const L4_START: u8 = 84;
+
+fn dow(day: &DayOfWeek) -> &'static str {
+    match day {
+        DayOfWeek::Sunday => "Sunday",
+        DayOfWeek::Monday => "Monday",
+        DayOfWeek::Tuesday => "Teusday",
+        DayOfWeek::Wednesday => "Wednesday",
+        DayOfWeek::Thursday => "Thrusday",
+        DayOfWeek::Friday => "Friday",
+        DayOfWeek::Saturday => "Saturday",
+    }
+}
+
 #[embassy_executor::main]
 async fn main(_spawner: Spawner) {
     bind_interrupts!(struct Irqs{
@@ -31,7 +49,7 @@ async fn main(_spawner: Spawner) {
         day: 27,
         day_of_week: DayOfWeek::Monday,
         hour: 15,
-        minute: 33,
+        minute: 40,
         second: 0,
     };
     timer.set_datetime(start_time).unwrap();
@@ -80,8 +98,11 @@ async fn main(_spawner: Spawner) {
             lcd.write_str("0", &mut Delay).expect("");
         }
         lcd.write_str(&s, &mut Delay).expect("Cannot write str");
-        lcd.set_cursor_pos(0, &mut Delay)
+        lcd.set_cursor_pos(L4_START, &mut Delay)
             .expect("Probably a failed LCD.");
+        lcd.write_str(dow(&cur_time.day_of_week), &mut Delay)
+            .expect("...");
+        lcd.set_cursor_pos(0, &mut Delay).expect("...");
         // count += 1;
         Timer::after_secs(1).await;
     }
