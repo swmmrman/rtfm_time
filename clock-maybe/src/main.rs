@@ -1,7 +1,6 @@
 #![no_std]
 #![no_main]
 
-use defmt::Format;
 use embassy_executor::Spawner;
 use embassy_rp as hal;
 use embassy_rp::i2c;
