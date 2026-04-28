@@ -5,8 +5,10 @@ use embassy_executor::Spawner;
 use embassy_rp as hal;
 use embassy_rp::block::ImageDef;
 use embassy_rp::i2c::{self};
-use embassy_time::Delay;
+use embassy_time::{Delay, Timer};
 use hd44780_driver::{self, HD44780};
+
+use itoa;
 
 //Panic Handler
 use panic_probe as _;
@@ -36,10 +38,18 @@ async fn main(_spawner: Spawner) {
     lcd.reset(&mut Delay).expect("Failed to reset");
     lcd.clear(&mut Delay).expect("Faile to clear");
 
+    let mut buff = itoa::Buffer::new();
+
     lcd.write_str("Hello World", &mut Delay)
         .expect("Replace LCD,  cannot write");
+    let mut count = 0;
     loop {
-        //Timer::after_millis(100).await;
+        let counter = buff.format(count.clone());
+        Timer::after_millis(1000).await;
+        lcd.clear(&mut Delay).expect("c");
+        lcd.set_cursor_pos(count, &mut Delay).expect("scp");
+        lcd.write_str(counter, &mut Delay).expect("ws");
+        count += 1
     }
 }
 
