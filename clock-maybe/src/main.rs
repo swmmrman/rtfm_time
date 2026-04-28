@@ -123,7 +123,20 @@ async fn main(_spawner: Spawner) {
             .expect("Probably a failed LCD.");
         lcd.write_str(dow(&cur_time.day_of_week), &mut Delay)
             .expect("...");
-        lcd.set_cursor_pos(0, &mut Delay).expect("...");
+        lcd.write_str("   ", &mut Delay).expect("");
+        lcd.write_str(mas(cur_time.month), &mut Delay).expect("msg");
+        if cur_time.day >= 10 {
+            lcd.write_str(" ", &mut Delay).expect("msg");
+        } else {
+            lcd.write_str("  ", &mut Delay).expect("msg");
+        }
+        lcd.write_str(itoa::Buffer::new().format(cur_time.day), &mut Delay)
+            .expect("msg");
+        lcd.write_str(" ", &mut Delay).expect("");
+        lcd.write_str(itoa::Buffer::new().format(cur_time.year), &mut Delay)
+            .expect("msg");
+
+        lcd.set_cursor_pos(L1_START, &mut Delay).expect("...");
         // count += 1;
         Timer::after_secs(1).await;
     }
