@@ -69,8 +69,8 @@ async fn main(_spawner: Spawner) {
         month: 4,
         day: 27,
         day_of_week: DayOfWeek::Monday,
-        hour: 15,
-        minute: 40,
+        hour: 20,
+        minute: 30,
         second: 0,
     };
     timer.set_datetime(start_time).unwrap();
@@ -108,17 +108,17 @@ async fn main(_spawner: Spawner) {
         if cur_time.hour < 10 {
             lcd.write_str("0", &mut Delay).expect("");
         }
-        lcd.write_str(&h, &mut Delay).expect("Cannot write str");
+        lcd.write_str(h, &mut Delay).expect("Cannot write str");
         lcd.write_str(":", &mut Delay).expect("Cannot write str");
         if cur_time.minute < 10 {
             lcd.write_str("0", &mut Delay).expect("");
         }
-        lcd.write_str(&m, &mut Delay).expect("Cannot write str");
+        lcd.write_str(m, &mut Delay).expect("Cannot write str");
         lcd.write_str(":", &mut Delay).expect("Cannot write str");
         if cur_time.second < 10 {
             lcd.write_str("0", &mut Delay).expect("");
         }
-        lcd.write_str(&s, &mut Delay).expect("Cannot write str");
+        lcd.write_str(s, &mut Delay).expect("Cannot write str");
         lcd.set_cursor_pos(L4_START, &mut Delay)
             .expect("Probably a failed LCD.");
         lcd.write_str(dow(&cur_time.day_of_week), &mut Delay)
@@ -135,7 +135,6 @@ async fn main(_spawner: Spawner) {
         lcd.write_str(" ", &mut Delay).expect("");
         lcd.write_str(itoa::Buffer::new().format(cur_time.year), &mut Delay)
             .expect("msg");
-
         lcd.set_cursor_pos(L1_START, &mut Delay).expect("...");
         // count += 1;
         Timer::after_secs(1).await;
